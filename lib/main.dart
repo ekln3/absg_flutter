@@ -3,6 +3,8 @@ import 'package:fl_chart/fl_chart.dart';
 import "dart:async";
 import 'dart:math';
 
+import 'package:sensors_plus/sensors_plus.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -17,199 +19,216 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Scaffold(
+        appBar: AppBar(title: const Text("absg")),
+        body: SafeArea(
+          child: Padding(padding: const EdgeInsets.all(20.0), child: MyAbsgChart()),
+        ),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+class MyAbsgChart extends StatefulWidget {
+  const MyAbsgChart({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyAbsgChart> createState() => _MyAbsgChartState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  int _random = 0;
+class _MyAbsgChartState extends State<MyAbsgChart> {
+  double _g = 9.8;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  int _clock = 0;
+
+  double _ax = 0;
+  double _ay = 0;
+  double _az = 0;
+  double _absg = 0;
 
   @override
   void initState() {
     Timer.periodic(
-      Duration(milliseconds: 10),
-      _onTimer,
-    );
+        Duration(milliseconds: 10), (timer) => setState(() => _clock++));
+    userAccelerometerEvents.listen((UserAccelerometerEvent event) {
+      setState(() {
+        _ax = event.x;
+        _ay = event.y;
+        _az = event.z;
+        double _absg_t = sqrt(pow(_ax, 2) + pow(_ay, 2)) / _g;
+        if (_absg < 0.02){
+          _absg = 0;
+        }
+        else{
+          _absg = _absg_t;
+        }
+      });
+      //setState
+    });
     super.initState();
   }
 
-  void _onTimer(Timer timer) {
-    setState(
-      () => _random++,
+  @override
+  Widget build(BuildContext context) {
+    return BarChart(
+      BarChartData(
+          maxY: 2,
+          minY: -2,
+          borderData: FlBorderData(
+              border: const Border(
+                top: BorderSide.none,
+                right: BorderSide.none,
+                left: BorderSide(width: 1),
+                bottom: BorderSide(width: 1),
+              )),
+          groupsSpace: 10,
+          barGroups: [
+            BarChartGroupData(x: 1, barRods: [
+              BarChartRodData(toY: _absg, width: 15),
+            ]),
+            BarChartGroupData(x: 1, barRods: [
+              BarChartRodData(toY: _ax, width: 15),
+            ]),
+            BarChartGroupData(x: 1, barRods: [
+              BarChartRodData(toY: _ay, width: 15),
+            ]),
+            BarChartGroupData(x: 1, barRods: [
+              BarChartRodData(toY: _az, width: 15),
+            ]),
+          ]),
     );
   }
+}
 
-  final maxX = 50.0;
-  final maxY = 50.0;
-  final radius = 8.0;
-
-  Color blue1 = const Color(0xFF0D47A1);
-  Color blue2 = const Color(0xFF42A5F5).withOpacity(0.8);
-
-  List<ScatterSpot> randomData() {
-    const blue1Count = 21;
-    const blue2Count = 57;
-    return List.generate(blue1Count + blue2Count, (i) {
-      Color color;
-      if (i < blue1Count) {
-        color = Colors.blue;
-      } else {
-        color = Colors.purple;
-      }
-
-      return ScatterSpot(
-        (Random().nextDouble() * (50.0 - 8)) + 4,
-        (Random().nextDouble() * (50.0 - 8)) + 4,
-        color: color,
-        radius: (Random().nextDouble() * 16) + 4,
-      );
-    });
-  }
-
-  List<ScatterSpot> flutterLogoData() {
-    return [
-      /// section 1
-      ScatterSpot(20, 14.5, color: blue1, radius: radius),
-      ScatterSpot(22, 16.5, color: blue1, radius: radius),
-      ScatterSpot(24, 18.5, color: blue1, radius: radius),
-
-      ScatterSpot(22, 12.5, color: blue1, radius: radius),
-      ScatterSpot(24, 14.5, color: blue1, radius: radius),
-      ScatterSpot(26, 16.5, color: blue1, radius: radius),
-
-      ScatterSpot(24, 10.5, color: blue1, radius: radius),
-      ScatterSpot(26, 12.5, color: blue1, radius: radius),
-      ScatterSpot(28, 14.5, color: blue1, radius: radius),
-
-      ScatterSpot(26, 8.5, color: blue1, radius: radius),
-      ScatterSpot(28, 10.5, color: blue1, radius: radius),
-      ScatterSpot(30, 12.5, color: blue1, radius: radius),
-
-      ScatterSpot(28, 6.5, color: blue1, radius: radius),
-      ScatterSpot(30, 8.5, color: blue1, radius: radius),
-      ScatterSpot(32, 10.5, color: blue1, radius: radius),
-
-      ScatterSpot(30, 4.5, color: blue1, radius: radius),
-      ScatterSpot(32, 6.5, color: blue1, radius: radius),
-      ScatterSpot(34, 8.5, color: blue1, radius: radius),
-
-      ScatterSpot(34, 4.5, color: blue1, radius: radius),
-      ScatterSpot(36, 6.5, color: blue1, radius: radius),
-
-      ScatterSpot(38, 4.5, color: blue1, radius: radius),
-
-      /// section 2
-      ScatterSpot(20, 14.5, color: blue2, radius: radius),
-      ScatterSpot(22, 12.5, color: blue2, radius: radius),
-      ScatterSpot(24, 10.5, color: blue2, radius: radius),
-
-      ScatterSpot(22, 16.5, color: blue2, radius: radius),
-      ScatterSpot(24, 14.5, color: blue2, radius: radius),
-      ScatterSpot(26, 12.5, color: blue2, radius: radius),
-
-      ScatterSpot(24, 18.5, color: blue2, radius: radius),
-      ScatterSpot(26, 16.5, color: blue2, radius: radius),
-      ScatterSpot(28, 14.5, color: blue2, radius: radius),
-
-      ScatterSpot(26, 20.5, color: blue2, radius: radius),
-      ScatterSpot(28, 18.5, color: blue2, radius: radius),
-      ScatterSpot(30, 16.5, color: blue2, radius: radius),
-
-      ScatterSpot(28, 22.5, color: blue2, radius: radius),
-      ScatterSpot(30, 20.5, color: blue2, radius: radius),
-      ScatterSpot(32, 18.5, color: blue2, radius: radius),
-
-      ScatterSpot(30, 24.5, color: blue2, radius: radius),
-      ScatterSpot(32, 22.5, color: blue2, radius: radius),
-      ScatterSpot(34, 20.5, color: blue2, radius: radius),
-
-      ScatterSpot(34, 24.5, color: blue2, radius: radius),
-      ScatterSpot(36, 22.5, color: blue2, radius: radius),
-
-      ScatterSpot(38, 24.5, color: blue2, radius: radius),
-
-      /// section 3
-      ScatterSpot(10, 25, color: blue2, radius: radius),
-      ScatterSpot(12, 23, color: blue2, radius: radius),
-      ScatterSpot(14, 21, color: blue2, radius: radius),
-
-      ScatterSpot(12, 27, color: blue2, radius: radius),
-      ScatterSpot(14, 25, color: blue2, radius: radius),
-      ScatterSpot(16, 23, color: blue2, radius: radius),
-
-      ScatterSpot(14, 29, color: blue2, radius: radius),
-      ScatterSpot(16, 27, color: blue2, radius: radius),
-      ScatterSpot(18, 25, color: blue2, radius: radius),
-
-      ScatterSpot(16, 31, color: blue2, radius: radius),
-      ScatterSpot(18, 29, color: blue2, radius: radius),
-      ScatterSpot(20, 27, color: blue2, radius: radius),
-
-      ScatterSpot(18, 33, color: blue2, radius: radius),
-      ScatterSpot(20, 31, color: blue2, radius: radius),
-      ScatterSpot(22, 29, color: blue2, radius: radius),
-
-      ScatterSpot(20, 35, color: blue2, radius: radius),
-      ScatterSpot(22, 33, color: blue2, radius: radius),
-      ScatterSpot(24, 31, color: blue2, radius: radius),
-
-      ScatterSpot(22, 37, color: blue2, radius: radius),
-      ScatterSpot(24, 35, color: blue2, radius: radius),
-      ScatterSpot(26, 33, color: blue2, radius: radius),
-
-      ScatterSpot(24, 39, color: blue2, radius: radius),
-      ScatterSpot(26, 37, color: blue2, radius: radius),
-      ScatterSpot(28, 35, color: blue2, radius: radius),
-
-      ScatterSpot(26, 41, color: blue2, radius: radius),
-      ScatterSpot(28, 39, color: blue2, radius: radius),
-      ScatterSpot(30, 37, color: blue2, radius: radius),
-
-      ScatterSpot(28, 43, color: blue2, radius: radius),
-      ScatterSpot(30, 41, color: blue2, radius: radius),
-      ScatterSpot(32, 39, color: blue2, radius: radius),
-
-      ScatterSpot(30, 45, color: blue2, radius: radius),
-      ScatterSpot(32, 43, color: blue2, radius: radius),
-      ScatterSpot(34, 41, color: blue2, radius: radius),
-
-      ScatterSpot(34, 45, color: blue2, radius: radius),
-      ScatterSpot(36, 43, color: blue2, radius: radius),
-
-      ScatterSpot(38, 45, color: blue2, radius: radius),
-    ];
-  }
-
-  Widget scatterComponent = ScatterChart(
-    ScatterChartData(
-        scatterSpots: [ScatterSpot(0, 0), ScatterSpot(1, 34)],
-        minX: 0,
-        maxX: 50.0,
-        minY: 0,
-        maxY: 50.0),
-  );
+class MyChart extends StatelessWidget {
+  const MyChart({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: scatterComponent,
+    return BarChart(
+      BarChartData(
+          borderData: FlBorderData(
+              border: const Border(
+            top: BorderSide.none,
+            right: BorderSide.none,
+            left: BorderSide(width: 1),
+            bottom: BorderSide(width: 1),
+          )),
+          groupsSpace: 10,
+          barGroups: [
+            BarChartGroupData(x: 1, barRods: [
+              BarChartRodData(toY: 10, width: 15),
+            ]),
+            BarChartGroupData(x: 2, barRods: [
+              BarChartRodData(toY: 9, width: 15),
+            ]),
+            BarChartGroupData(x: 3, barRods: [
+              BarChartRodData(toY: 4, width: 15),
+            ]),
+            BarChartGroupData(x: 4, barRods: [
+              BarChartRodData(toY: 2, width: 15),
+            ]),
+            BarChartGroupData(x: 5, barRods: [
+              BarChartRodData(toY: 13, width: 15),
+            ]),
+            BarChartGroupData(x: 6, barRods: [
+              BarChartRodData(toY: 17, width: 15),
+            ]),
+            BarChartGroupData(x: 7, barRods: [
+              BarChartRodData(toY: 19, width: 15),
+            ]),
+            BarChartGroupData(x: 8, barRods: [
+              BarChartRodData(toY: 21, width: 15),
+            ]),
+          ]),
+    );
+  }
+}
+
+class Clock extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _ClockState();
+  }
+}
+
+class _ClockState extends State<Clock> {
+  int _clock = 0;
+
+  int get clock => _clock;
+
+  double _g = 9.8;
+
+  double _ax = 0;
+  double _ay = 0;
+  double _absg = 0;
+
+  void refreshGraph() {}
+
+  @override
+  void initState() {
+    Timer.periodic(
+        Duration(milliseconds: 10), (timer) => setState(() => _clock++));
+    userAccelerometerEvents.listen((UserAccelerometerEvent event) {
+      setState(() {
+        _ax = event.x;
+        _ay = event.y;
+        _absg = sqrt(pow(_ax, 2) + pow(_ay, 2)) / _g;
+      });
+      //setState
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(_absg.toString()),
+        Container(
+          height: 10,
+          width: _absg * 10,
+          color: Colors.black,
+        ),
+        BarChart(
+          BarChartData(
+              borderData: FlBorderData(
+                  border: const Border(
+                top: BorderSide.none,
+                right: BorderSide.none,
+                left: BorderSide(width: 1),
+                bottom: BorderSide(width: 1),
+              )),
+              groupsSpace: 1,
+              barGroups: [
+                BarChartGroupData(x: 1, barRods: [
+                  BarChartRodData(toY: 10, width: 15),
+                ]),
+                BarChartGroupData(x: 2, barRods: [
+                  BarChartRodData(toY: 9, width: 15),
+                ]),
+                BarChartGroupData(x: 3, barRods: [
+                  BarChartRodData(toY: 4, width: 15),
+                ]),
+                BarChartGroupData(x: 4, barRods: [
+                  BarChartRodData(toY: 2, width: 15),
+                ]),
+                BarChartGroupData(x: 5, barRods: [
+                  BarChartRodData(toY: 13, width: 15),
+                ]),
+                BarChartGroupData(x: 6, barRods: [
+                  BarChartRodData(toY: 17, width: 15),
+                ]),
+                BarChartGroupData(x: 7, barRods: [
+                  BarChartRodData(toY: 19, width: 15),
+                ]),
+                BarChartGroupData(x: 8, barRods: [
+                  BarChartRodData(toY: 21, width: 15),
+                ]),
+              ]),
+        ),
+      ],
     );
   }
 }
