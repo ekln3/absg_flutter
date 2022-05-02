@@ -1,3 +1,4 @@
+import 'package:absg/AbsgChart.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import "dart:async";
@@ -15,16 +16,75 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+        title: 'absg',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: MainPage());
+  }
+}
+
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  int _displayIndex = 0;
+
+  List<Widget> _pages = [
+    MyAbsgCharts(),
+    CustomPage(),
+    CustomPage(),
+  ];
+
+  void _onTapBottomNavigationBar(index) {
+    setState(() {
+      _displayIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('absg'),
       ),
-      home: Scaffold(
-        appBar: AppBar(title: const Text("absg")),
-        body: SafeArea(
-          child: Padding(padding: const EdgeInsets.all(20.0), child: MyAbsgChart()),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(0.0),
+          child: _pages[_displayIndex],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.border_all),
+            label: 'Log',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Setting',
+          ),
+        ],
+        currentIndex: _displayIndex,
+        onTap: _onTapBottomNavigationBar,
+      ),
     );
+  }
+}
+
+class CustomPage extends StatelessWidget {
+  const CustomPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
