@@ -1,16 +1,40 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\vanch\\OneDrive\\Documents\\MyProgramming2\\220501_absg_flutter\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-or\\values-or.xml",
+            "outputFile": "/Users/pgtpt/dev/220502_absg_flutter/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-or/values-or.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\vanch\\.gradle\\caches\\transforms-2\\files-2.1\\122df2e57d294d1a53db26bbc3b813c1\\core-1.6.0\\res\\values-or\\values-or.xml",
+                    "source": "/Users/pgtpt/.gradle/caches/transforms-2/files-2.1/14b93615368c2249f1830e26ca064ab5/core-1.6.0/res/values-or/values-or.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
                         "startOffsets": "55",
                         "endColumns": "100",
                         "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "195",
+                        "endColumns": "100",
+                        "endOffsets": "291"
+                    }
+                },
+                {
+                    "source": "/Users/pgtpt/.gradle/caches/transforms-2/files-2.1/4a1e8147c3db656939cfc830651ce63e/jetified-play-services-basement-18.0.0/res/values-or/values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "195",
+                        "endColumns": "135",
+                        "endOffsets": "330"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "139",
+                        "endOffsets": "190"
                     }
                 }
             ]

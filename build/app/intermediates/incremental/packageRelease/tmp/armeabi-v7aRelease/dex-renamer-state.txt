@@ -1,0 +1,4 @@
+#Mon May 02 19:44:22 JST 2022
+base.0=/Users/pgtpt/dev/220502_absg_flutter/build/app/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

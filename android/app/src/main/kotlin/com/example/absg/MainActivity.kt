@@ -1,4 +1,4 @@
-package com.example.absg
+package com.hiroapps.absg
 
 import io.flutter.embedding.android.FlutterActivity
 
