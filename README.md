@@ -1,5 +1,7 @@
 # absg
 
+![](IMG_6870.jpg)
+
 A new Flutter project.
 
 ## Getting Started

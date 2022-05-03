@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import "dart:async";
@@ -256,7 +254,7 @@ class _MyAbsgChartState3 extends State<MyAbsgChart3> {
 
   @override
   void initState() {
-    print("2 initState is called!!");
+    print("3 initState is called!!");
     print(this.mounted.toString());
     _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
       _onTimer(timer);
@@ -280,30 +278,104 @@ class _MyAbsgChartState3 extends State<MyAbsgChart3> {
     super.dispose();
   }
 
+  double roundAt(var value, int fixed_point) {
+    return ((value * fixed_point.toDouble()).round()) / fixed_point.toDouble();
+  }
+
+  double _minY = 0;
+  double _maxY = 2;
+  double _maxYMax = 1;
+  double _PanStartY = 0;
+  double _PanUpdatingY = 0;
+
+  void _touched(FlTouchEvent event, BarTouchResponse? res) {
+    print("FlTouchEvnet");
+    if (event is FlPanStartEvent) {
+      //_PanStartSpot = event.details.globalPosition.dx;
+      print("FlPanStartEvent");
+      print(event.details.localPosition.dy.toString());
+      _PanStartY = event.details.localPosition.dy;
+    } else if (event is FlPanUpdateEvent) {
+      print("FlPanUpdateEvent");
+      print(event.details.localPosition.dy.toString());
+      _PanUpdatingY = event.details.localPosition.dy;
+      double _PannedYDistance = _PanUpdatingY - _PanStartY;
+      //double _MaxYInc = _PannedYDistance > 0 ? 0.05 : -0.05;
+      double _MaxYInc = (_maxY - _minY) / 50.0;
+      _MaxYInc = _PannedYDistance > 0 ? _MaxYInc : -_MaxYInc;
+      _MaxYInc = -_MaxYInc;
+
+      setState(() {
+        if (_maxY >= _maxYMax)
+          _maxY += _MaxYInc;
+        else
+          _maxY = _maxYMax;
+      });
+    } else if (event is FlPanEndEvent) {
+      print("FlPanEndEvent");
+    } else if (event is FlPanCancelEvent) {
+      print("FlPanCancelEvent");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ScatterChart(
-      ScatterChartData(
-        scatterSpots: _spots,
-        minX: -2,
-        maxX: 2,
-        minY: -2,
-        maxY: 2,
-        borderData: FlBorderData(
-          show: true,
-        ),
-        gridData: FlGridData(
-          show: true,
-        ),
-        titlesData: FlTitlesData(
-          show: false,
-        ),
-        scatterTouchData: ScatterTouchData(
-          enabled: false,
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: SizedBox(
+              child: Text(
+                  "sqrt(gx^2 + gy^2) = " + roundAt(_absg, 100).toString())),
         ),
       ),
-      // swapAnimationDuration: const Duration(milliseconds: 60),
-      // swapAnimationCurve: Curves.fastOutSlowIn,
-    );
+      SizedBox(
+        height: 10,
+      ),
+      Expanded(
+          child: BarChart(
+        BarChartData(
+            maxY: _maxY,
+            minY: _minY,
+            titlesData: FlTitlesData(
+              show: true,
+              topTitles: SideTitles(showTitles: false),
+              rightTitles: SideTitles(showTitles: false),
+              bottomTitles: SideTitles(showTitles: false),
+              leftTitles: SideTitles(
+                  showTitles: true, rotateAngle: 0, textAlign: TextAlign.right),
+            ),
+            borderData: FlBorderData(
+                border: const Border(
+              top: BorderSide.none,
+              right: BorderSide.none,
+              left: BorderSide.none,
+              bottom: BorderSide(width: 1),
+            )),
+            barTouchData: BarTouchData(
+              enabled: true,
+              handleBuiltInTouches: true,
+              touchCallback: _touched,
+            ),
+            groupsSpace: 10,
+            barGroups: [
+              BarChartGroupData(x: 1, barRods: [
+                BarChartRodData(
+                  fromY: 0,
+                  toY: _absg,
+                  //toY: 0,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  colors: [Colors.red],
+                  borderRadius: BorderRadius.all(Radius.zero),
+                  borderSide: BorderSide(width: 0),
+                ),
+              ]),
+            ]),
+      )),
+      SizedBox(
+        height: 10,
+      ),
+    ]);
   }
 }
