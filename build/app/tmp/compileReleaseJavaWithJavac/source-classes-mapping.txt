@@ -1,4 +1,0 @@
-io/flutter/plugins/GeneratedPluginRegistrant.java
- io.flutter.plugins.GeneratedPluginRegistrant
-com/hiroapps/absg/BuildConfig.java
- com.hiroapps.absg.BuildConfig
