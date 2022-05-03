@@ -34,7 +34,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _displayIndex = 0;
 
-  List<Widget> _pages = [
+  List<Widget> _NavigationPages = [
     MyAbsgCharts(),
     CustomPage(),
     CustomPage(),
@@ -46,6 +46,12 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  void _outportCSV({Key? key}) {
+    print("pushed outport CSV button");
+  }
+
+  void _toggleRecord() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +61,32 @@ class _MainPageState extends State<MainPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(0.0),
-          child: _pages[_displayIndex],
+          child: Column(children: [
+            SizedBox(
+              height: 60,
+              child: Row(children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                OutlinedButton(
+                    onPressed: () {
+                      _toggleRecord();
+                    },
+                    child: const Text("Record")),
+                const SizedBox(
+                  width: 10,
+                ),
+                OutlinedButton(
+                    onPressed: () {
+                      _outportCSV();
+                    },
+                    child: const Text("Output CSV"))
+              ]),
+            ),
+            Expanded(
+              child: _NavigationPages[_displayIndex],
+            ),
+          ]),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -66,7 +97,7 @@ class _MainPageState extends State<MainPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.border_all),
-            label: 'Log',
+            label: 'Records',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
