@@ -66,7 +66,9 @@ class _MainPageState extends State<MainPage> {
           child: Column(children: [
             SizedBox(
               height: 60,
-              child: AbsgRecorder(),
+              child: AbsgRecorder(
+                storage: CounterStorage(),
+              ),
             ),
             Expanded(
               child: _NavigationPages[_displayIndex],

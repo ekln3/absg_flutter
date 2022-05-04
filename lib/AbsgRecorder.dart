@@ -4,9 +4,51 @@ import "dart:async";
 import 'dart:math';
 
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+
+//Read and write files
+//https://docs.flutter.dev/cookbook/persistence/reading-writing-files
+class CounterStorage {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    print(directory.path);
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/counter.txt');
+  }
+
+  Future<int> readCounter() async {
+    try {
+      final file = await _localFile;
+
+      // Read the file
+      final contents = await file.readAsString();
+
+      return int.parse(contents);
+    } catch (e) {
+      // If encountering an error, return 0
+      return 0;
+    }
+  }
+
+  Future<File> writeCounter(String str) async {
+    final file = await _localFile;
+
+    // Write the file
+    return file.writeAsString(str);
+  }
+}
 
 class AbsgRecorder extends StatefulWidget {
-  const AbsgRecorder({Key? key}) : super(key: key);
+  const AbsgRecorder({Key? key, required this.storage}) : super(key: key);
+
+  final CounterStorage storage;
 
   @override
   State<AbsgRecorder> createState() => _AbsgRecorderState();
@@ -40,7 +82,25 @@ class _AbsgRecorderState extends State<AbsgRecorder> {
 
   void _outportCSV() {
     print("outputCSV");
+
+    String outputString = "";
+
+    for (var ar in data) {
+      var col = 0;
+      for (var val in ar) {
+        outputString += val.toString();
+        if (col != 0 && col != ar.length - 1) {
+          outputString += ",";
+        }
+        col++;
+      }
+      outputString += "\n";
+    }
+
     print(time.length);
+
+    final directory = getApplicationDocumentsDirectory();
+    widget.storage.writeCounter(outputString);
   }
 
   double _g = 9.8;
