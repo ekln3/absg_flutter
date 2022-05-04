@@ -16,9 +16,9 @@ class _MyAbsgChartsState extends State<MyAbsgCharts> {
   int displayIndex = 0;
 
   final List<Widget> _charts = [
+    const MyAbsgChart3(),
     const MyAbsgChart(),
     const MyAbsgChart2(),
-    const MyAbsgChart3(),
   ];
 
   void _onPageChanged(index) {

@@ -1,10 +1,12 @@
-import 'package:absg/AbsgChart.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import "dart:async";
 import 'dart:math';
 
 import 'package:sensors_plus/sensors_plus.dart';
+
+import 'package:absg/AbsgChart.dart';
+import 'package:absg/AbsgRecorder.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,24 +66,7 @@ class _MainPageState extends State<MainPage> {
           child: Column(children: [
             SizedBox(
               height: 60,
-              child: Row(children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                OutlinedButton(
-                    onPressed: () {
-                      _toggleRecord();
-                    },
-                    child: const Text("Record")),
-                const SizedBox(
-                  width: 10,
-                ),
-                OutlinedButton(
-                    onPressed: () {
-                      _outportCSV();
-                    },
-                    child: const Text("Output CSV"))
-              ]),
+              child: AbsgRecorder(),
             ),
             Expanded(
               child: _NavigationPages[_displayIndex],
