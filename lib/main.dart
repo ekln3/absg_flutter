@@ -1,10 +1,12 @@
-import 'package:absg/AbsgChart.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import "dart:async";
 import 'dart:math';
 
 import 'package:sensors_plus/sensors_plus.dart';
+
+import 'package:absg/AbsgChart.dart';
+import 'package:absg/LogListView.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,8 +37,10 @@ class _MainPageState extends State<MainPage> {
   int _displayIndex = 0;
 
   List<Widget> _NavigationPages = [
-    MyAbsgCharts(),
-    CustomPage(),
+    MyAbsgCharts(
+      sensorData: SensorData(),
+    ),
+    LogListView(),
     CustomPage(),
   ];
 
@@ -44,10 +48,6 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       _displayIndex = index;
     });
-  }
-
-  void _outportCSV({Key? key}) {
-    print("pushed outport CSV button");
   }
 
   void _toggleRecord() {}
@@ -59,36 +59,10 @@ class _MainPageState extends State<MainPage> {
         title: const Text('absg'),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: Column(children: [
-            SizedBox(
-              height: 60,
-              child: Row(children: [
-                const SizedBox(
-                  width: 10,
-                ),
-                OutlinedButton(
-                    onPressed: () {
-                      _toggleRecord();
-                    },
-                    child: const Text("Record")),
-                const SizedBox(
-                  width: 10,
-                ),
-                OutlinedButton(
-                    onPressed: () {
-                      _outportCSV();
-                    },
-                    child: const Text("Output CSV"))
-              ]),
-            ),
-            Expanded(
-              child: _NavigationPages[_displayIndex],
-            ),
-          ]),
-        ),
-      ),
+          child: Padding(
+        padding: const EdgeInsets.all(0.0),
+        child: _NavigationPages[_displayIndex],
+      )),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
