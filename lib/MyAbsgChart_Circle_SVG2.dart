@@ -110,7 +110,7 @@ class MyAbsgChart_Circle_SVG2State extends State<MyAbsgChart_Circle_SVG2> {
       _circle_r = _absg_namashi * 100 / 0.4;
       if (_circle_r > 100) _circle_r = 100;
 
-      _svg_rotate_rad = atan2(-_ax, _az);
+      _svg_rotate_rad = atan2(_ax, -_az);
       _svg_rotate = _svg_rotate_rad / pi * 180;
       // _svg_rotate = 30;
       // _svg_rotate_rad = 30 / 180 * pi;
