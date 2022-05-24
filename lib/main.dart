@@ -5,7 +5,7 @@ import 'dart:math';
 
 import 'package:sensors_plus/sensors_plus.dart';
 
-import 'package:absg/AbsgChart.dart';
+import 'package:absg/AbsgCharts.dart';
 import 'package:absg/LogListView.dart';
 
 void main() {
